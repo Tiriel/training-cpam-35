@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello MovieController!{% endblock %}
+{% block title %}{{ movie.title }}{% endblock %}
 
 {% block body %}
 <style>
@@ -9,12 +9,13 @@
 </style>
 
 <div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <h1>{{ movie.title }}</h1>
 
-    This friendly message is coming from:
     <ul>
-        <li>Your controller at <code><a href="{{ '/home/benjamin/Dev/sl/formations/training-cpam/src/Controller/MovieController.php'|file_link(0) }}">src/Controller/MovieController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/home/benjamin/Dev/sl/formations/training-cpam/templates/movie/index.html.twig'|file_link(0) }}">templates/movie/index.html.twig</a></code></li>
+        <li>Id : {{ movie.id }}</li>
+        <li>Released : {{ movie.released|date('d M Y') }}</li>
+        <li>Country : {{ movie.country }}</li>
+        <li>Genre : {{ movie.genre|join(', ') }}</li>
     </ul>
 </div>
 {% endblock %}
