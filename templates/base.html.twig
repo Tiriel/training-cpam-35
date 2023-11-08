@@ -14,6 +14,7 @@
     </head>
     <body>
     <header>
+        {% block header '' %}
         {% block navbar %}
             {{ include('includes/_navbar.html.twig', with_context = false) }}
         {% endblock %}
