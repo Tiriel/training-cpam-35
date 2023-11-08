@@ -23,9 +23,10 @@ class MovieController extends AbstractController
     }
 
     #[Route('/new', name: 'app_admin_movie_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}/edit', name: 'app_admin_movie_edit', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager, ?Movie $movie = null): Response
     {
-        $movie = new Movie();
+        $movie ??= new Movie();
         $form = $this->createForm(MovieType::class, $movie);
         $form->handleRequest($request);
 
@@ -47,24 +48,6 @@ class MovieController extends AbstractController
     {
         return $this->render('admin/movie/show.html.twig', [
             'movie' => $movie,
-        ]);
-    }
-
-    #[Route('/{id}/edit', name: 'app_admin_movie_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Movie $movie, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(MovieType::class, $movie);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_admin_movie_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('admin/movie/edit.html.twig', [
-            'movie' => $movie,
-            'form' => $form,
         ]);
     }
 

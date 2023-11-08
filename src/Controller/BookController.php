@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Book;
+use App\Form\BookType;
 use App\Repository\BookRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -41,18 +42,11 @@ class BookController extends AbstractController
     #[Route('/new', name: 'app_book_new', methods: ['GET'])]
     public function new(EntityManagerInterface $manager): Response
     {
-        $book = (new Book())
-            ->setTitle('1984')
-            ->setAuthor('G.Orwell')
-            ->setReleasedAt(new \DateTimeImmutable('01-01-1951'))
-            ->setIsbn('934-564345-23445')
-            ;
+        $book = new Book();
+        $form = $this->createForm(BookType::class, $book);
 
-        $manager->persist($book);
-        $manager->flush();
-
-        return $this->redirectToRoute('app_book_show', [
-            'id' => $book->getId(),
+        return $this->render('book/new.html.twig', [
+            'form' => $form,
         ]);
     }
 
