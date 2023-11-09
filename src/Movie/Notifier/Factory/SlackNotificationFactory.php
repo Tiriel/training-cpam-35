@@ -11,4 +11,9 @@ class SlackNotificationFactory implements NotificationFactoryInterface
     {
         return new SlackNotification($subject);
     }
+
+    public static function getIndex(): string
+    {
+        return 'slack';
+    }
 }

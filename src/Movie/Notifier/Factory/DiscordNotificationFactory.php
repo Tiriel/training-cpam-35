@@ -11,4 +11,9 @@ class DiscordNotificationFactory implements NotificationFactoryInterface
     {
         return new DiscordNotification($subject);
     }
+
+    public static function getIndex(): string
+    {
+        return 'discord';
+    }
 }

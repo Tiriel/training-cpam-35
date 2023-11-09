@@ -4,9 +4,14 @@ namespace App\Movie\Search\Consumer;
 
 use App\Movie\Search\Enum\SearchTypes;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class OmdbApiConsumer
 {
+    public function __construct(
+        private readonly HttpClientInterface $omdbClient
+    ) {}
+
     public function fetchMovie(SearchTypes $type, string $value): array
     {
         $data = $this->omdbClient->request(
