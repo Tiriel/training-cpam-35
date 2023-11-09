@@ -23,7 +23,7 @@ class MovieFixtures extends Fixture
     {
         $genres = [];
         foreach ($this->getMoviesData() as $datum) {
-            $date = $datum['Released'] === 'N/A' ? $datum['Year'] : $datum['Released'];
+            $date = $datum['Released'] === 'N/A' ? '01-01-'.$datum['Year'] : $datum['Released'];
 
             $movie = (new Movie())
                 ->setTitle($datum['Title'])

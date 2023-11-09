@@ -4,8 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Movie;
 use App\Form\MovieType;
-use App\Movie\Search\Consumer\OmdbApiConsumer;
-use App\Movie\Search\Enum\SearchTypes;
+use App\Movie\Search\Provider\MovieProvider;
 use App\Repository\MovieRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -39,12 +38,10 @@ class MovieController extends AbstractController
     }
 
     #[Route('/omdb/{title}', name: 'app_movie_omdb', methods: ['GET'])]
-    public function omdb(string $title, OmdbApiConsumer $consumer): Response
+    public function omdb(string $title, MovieProvider $provider): Response
     {
-        dd($consumer->fetchMovie(SearchTypes::Title, $title));
-
         return $this->render('movie/show.html.twig', [
-            'movie' => [],
+            'movie' => $provider->fetchOne($title),
         ]);
     }
 
