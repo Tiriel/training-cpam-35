@@ -9,6 +9,8 @@
     <img src="{{ movie.poster }}" alt="{{ movie.title }} poster" class="float-end" />
     <ul class="list-group list-group-flush">
         <li class="list-group-item">Id : {{ movie.id }}</li>
+        <li class="list-group-item">IMDb ID : {{ movie.imdbId }}</li>
+        <li class="list-group-item">Rated : {{ movie.rated }}</li>
         <li class="list-group-item">Released : {{ movie.releasedAt|date('d M Y') }}</li>
         <li class="list-group-item">Country : {{ movie.country }}</li>
         <li class="list-group-item">Plot : {{ movie.plot }}</li>

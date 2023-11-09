@@ -30,8 +30,8 @@ class OmdbToMovieMapper implements MapperInterface
             ->setReleasedAt(new \DateTimeImmutable($date))
             ->setPoster($value['Poster'])
             ->setPrice(5.0)
-            //->setRated($value['Rated'])
-            //->setImdbId($value['imdbID'])
+            ->setRated($value['Rated'])
+            ->setImdbId($value['imdbID'])
         ;
     }
 }
