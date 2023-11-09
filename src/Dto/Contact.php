@@ -2,12 +2,20 @@
 
 namespace App\Dto;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 class Contact
 {
     public function __construct(
+        #[Assert\NotBlank(message: 'Give your name, punk!')]
         private ?string $name = null,
+        #[Assert\Email]
+        #[Assert\NotBlank]
         private ?string $email = null,
+        #[Assert\NotBlank]
         private ?string $subject = null,
+        #[Assert\Length(min: 20)]
+        #[Assert\NotBlank]
         private ?string $content = null,
     ) {}
 

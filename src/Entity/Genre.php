@@ -4,8 +4,10 @@ namespace App\Entity;
 
 use App\Repository\GenreRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: GenreRepository::class, readOnly: true)]
+#[UniqueEntity('name')]
 class Genre
 {
     #[ORM\Id]

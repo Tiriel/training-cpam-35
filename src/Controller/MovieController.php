@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/movie')]
 class MovieController extends AbstractController
@@ -23,8 +24,13 @@ class MovieController extends AbstractController
     }
 
     #[Route('/{id<\d+>}', name: 'app_movie_show', methods: ['GET'])]
-    public function show(?Movie $movie): Response
+    public function show(?Movie $movie, ValidatorInterface $validator): Response
     {
+        $errors = $validator->validate($movie);
+        if (\count($errors) > 0) {
+            // Oh noes!
+        }
+
         return $this->render('movie/show.html.twig', [
             'movie' => $movie,
         ]);

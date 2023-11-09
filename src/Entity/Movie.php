@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MovieRepository::class)]
 #[ORM\ChangeTrackingPolicy('DEFERRED_EXPLICIT')]
@@ -17,6 +18,10 @@ class Movie
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\Sequentially([
+        new Assert\NotBlank(),
+        new Assert\Length(min: 5),
+    ])]
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
@@ -35,6 +40,8 @@ class Movie
     #[ORM\Column(nullable: true)]
     private ?int $price = null;
 
+    #[Assert\Unique]
+    #[Assert\Valid]
     #[ORM\ManyToMany(targetEntity: Genre::class, cascade: ['persist'])]
     private Collection $genres;
 
