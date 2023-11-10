@@ -32,7 +32,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[Assert\NotBlank()]
-    #[Assert\NotCompromisedPassword()]
+    //#[Assert\NotCompromisedPassword()]
     private ?string $plainPassword = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE, nullable: true)]

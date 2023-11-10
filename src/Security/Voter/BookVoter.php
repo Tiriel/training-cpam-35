@@ -27,10 +27,6 @@ class BookVoter extends Voter
             return false;
         }
 
-        if (!$user instanceof User && \in_array('ROLE_ADMIN', $token->getRoleNames())) {
-            return true;
-        }
-
         return match ($attribute) {
             self::VIEW => $this->checkView(),
             self::EDIT => $this->checkEdit($user, $subject),

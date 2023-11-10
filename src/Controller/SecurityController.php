@@ -48,7 +48,7 @@ class SecurityController extends AbstractController
             $user->eraseCredentials();
             // do anything else you need here, like send an email
 
-            return $security->login($user);
+            return $security->login($user, 'form_login');
         }
 
         return $this->render('security/register.html.twig', [

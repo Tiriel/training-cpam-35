@@ -33,7 +33,7 @@ security:
         main:
             lazy: true
             provider: app_all_provider
-            # entry_point: form_login
+            entry_point: form_login
             form_login:
                 login_path: app_security_login
                 check_path: app_security_login
@@ -58,7 +58,7 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/(login|register), roles: PUBLIC_ACCESS }
         - { path: ^/admin/(book|movie)/\d+/edit, roles: ROLE_USER }
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/, roles: IS_AUTHENTICATED }

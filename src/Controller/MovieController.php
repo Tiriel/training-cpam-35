@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Form\MovieType;
 use App\Movie\Search\Provider\MovieProvider;
 use App\Repository\MovieRepository;
+use App\Security\Voter\MovieVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,6 +29,7 @@ class MovieController extends AbstractController
     #[Route('/{id<\d+>}', name: 'app_movie_show', methods: ['GET'])]
     public function show(?Movie $movie, ValidatorInterface $validator): Response
     {
+        $this->denyAccessUnlessGranted(MovieVoter::UNDERAGE, $movie);
         $errors = $validator->validate($movie);
         if (\count($errors) > 0) {
             // Oh noes!
@@ -41,8 +43,11 @@ class MovieController extends AbstractController
     #[Route('/omdb/{title}', name: 'app_movie_omdb', methods: ['GET'])]
     public function omdb(string $title, MovieProvider $provider): Response
     {
+        $movie = $provider->fetchOne($title);
+        $this->denyAccessUnlessGranted(MovieVoter::UNDERAGE, $movie);
+
         return $this->render('movie/show.html.twig', [
-            'movie' => $provider->fetchOne($title),
+            'movie' => $movie,
         ]);
     }
 
@@ -50,6 +55,9 @@ class MovieController extends AbstractController
     #[Route('/{id}/edit', name: 'app_movie_edit', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, ?Movie $movie = null): Response
     {
+        if ($movie) {
+            $this->denyAccessUnlessGranted(MovieVoter::EDIT, $movie);
+        }
         $movie ??= new Movie();
         $form = $this->createForm(MovieType::class, $movie);
         $form->handleRequest($request);
