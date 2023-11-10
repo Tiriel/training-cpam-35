@@ -3,11 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Book;
+use App\Entity\User;
 use App\Form\BookType;
 use App\Repository\BookRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -40,10 +42,20 @@ class BookController extends AbstractController
     }
 
     #[Route('/new', name: 'app_book_new', methods: ['GET'])]
-    public function new(EntityManagerInterface $manager): Response
+    public function new(Request $request, EntityManagerInterface $manager): Response
     {
         $book = new Book();
         $form = $this->createForm(BookType::class, $book);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            if (($user = $this->getUser()) instanceof User) {
+                $book->setCreatedBy($user);
+            }
+            $manager->persist($book);
+            $manager->flush();
+
+            return $this->redirectToRoute('app_book_show', ['id' => $book->getId()]);
+        }
 
         return $this->render('book/new.html.twig', [
             'form' => $form,
@@ -53,6 +65,7 @@ class BookController extends AbstractController
     #[Route('/{title}', name: 'app_book_title', methods: ['GET'])]
     public function title(BookRepository $repository, ?string $title = null): Response
     {
+        $this->denyAccessUnlessGranted('book.title', $title);
         $book = $repository->findOneBy(['title' => $title]);
 
         return $this->redirectToRoute('app_book_show', [

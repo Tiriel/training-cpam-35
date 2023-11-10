@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Book;
 use App\Form\BookType;
 use App\Repository\BookRepository;
+use App\Security\Voter\BookVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -53,6 +54,8 @@ class BookController extends AbstractController
     #[Route('/{id}/edit', name: 'app_admin_book_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Book $book, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted(BookVoter::EDIT, $book);
+
         $form = $this->createForm(BookType::class, $book);
         $form->handleRequest($request);
 

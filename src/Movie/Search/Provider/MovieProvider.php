@@ -3,11 +3,13 @@
 namespace App\Movie\Search\Provider;
 
 use App\Entity\Movie;
+use App\Entity\User;
 use App\Movie\Search\Consumer\OmdbApiConsumer;
 use App\Movie\Search\Enum\SearchTypes;
 use App\Movie\Search\Mapper\OmdbToMovieMapper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class MovieProvider implements ProviderInterface
 {
@@ -18,6 +20,7 @@ class MovieProvider implements ProviderInterface
         private readonly EntityManagerInterface $manager,
         private readonly OmdbToMovieMapper $movieMapper,
         private readonly GenreProvider $provider,
+        private readonly TokenStorageInterface $storage,
     ) {}
 
     public function fetchOne(string $value, SearchTypes $type = SearchTypes::Title): Movie
@@ -37,6 +40,10 @@ class MovieProvider implements ProviderInterface
 
         foreach ($this->provider->fetchFromOmdbString($data['Genre']) as $genre) {
             $movie->addGenre($genre);
+        }
+
+        if (($user = $this->storage->getToken()?->getUser()) instanceof User) {
+            $movie->setCreatedBy($user);
         }
 
         $this->io?->note('Saving in database.');

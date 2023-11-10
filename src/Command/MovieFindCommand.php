@@ -52,10 +52,10 @@ class MovieFindCommand extends Command
 
     protected function interact(InputInterface $input, OutputInterface $output): void
     {
-        if (!$this->value) {
+        while (!$this->value) {
             $this->value = $this->io->ask('What is the title or IMDb ID you are searching for ?');
-            $this->type = $this->getType();
         }
+        $this->type = $this->getType();
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
