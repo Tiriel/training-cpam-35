@@ -13,6 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/movie')]
@@ -26,10 +27,11 @@ class MovieController extends AbstractController
         ]);
     }
 
+    #[IsGranted(MovieVoter::UNDERAGE, 'movie')]
     #[Route('/{id<\d+>}', name: 'app_movie_show', methods: ['GET'])]
     public function show(?Movie $movie, ValidatorInterface $validator): Response
     {
-        $this->denyAccessUnlessGranted(MovieVoter::UNDERAGE, $movie);
+        // $this->denyAccessUnlessGranted(MovieVoter::UNDERAGE, $movie);
         $errors = $validator->validate($movie);
         if (\count($errors) > 0) {
             // Oh noes!

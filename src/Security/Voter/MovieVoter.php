@@ -4,13 +4,17 @@ namespace App\Security\Voter;
 
 use App\Entity\Movie;
 use App\Entity\User;
+use App\Movie\Event\MovieUnderageEvent;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class MovieVoter extends Voter
 {
     public const UNDERAGE = 'movie.underage';
     public const EDIT = 'movie.edit';
+
+    public function __construct(private readonly EventDispatcherInterface $dispatcher){}
 
     protected function supports(string $attribute, mixed $subject): bool
     {
@@ -34,12 +38,18 @@ class MovieVoter extends Voter
     {
         $age = $user->getBirthday()?->diff(new \DateTimeImmutable())->y ?? null;
 
-        return match ($movie->getRated()) {
+        $vote = match ($movie->getRated()) {
             'G' => true,
             'PG', 'PG-13' => $age && $age >= 13,
             'R', 'NC-17' => $age && $age >= 17,
             default => false,
         };
+
+        if (false === $vote) {
+            $this->dispatcher->dispatch(new MovieUnderageEvent($movie, $user));
+        }
+
+        return $vote;
     }
 
     public function checkEdit(User $user, Movie $movie): bool
